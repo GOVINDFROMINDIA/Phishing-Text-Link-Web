@@ -57,36 +57,34 @@ def preprocess_input(text):
 def main():
     st.title("Scam Predictor")
 
-    st.text_area("Enter your text here:", key="input_text")
+    input_text = st.text_area("Enter your text here:")
 
-    text_content, link_content = split_text_and_links(st.session_state["input_text"])
+    if st.button("Predict"):
+        text_content, link_content = split_text_and_links(input_text)
 
-    if link_content:
-        st.subheader("Links:")
-        st.write(link_content)
+        if text_content:
+            st.subheader("Text:")
+            st.write(text_content)
 
-        if st.button("Predict Link Type"):
-            for link in link_content.splitlines():
-                prediction = predict_link_type(link)
-                st.write(f"Prediction: {prediction}")
-                if prediction == "benign":
-                    if st.button("Report this Link as Dangerous"):
-                        learned_links["dangerous"].add(link)
-                        st.write("Link reported as dangerous")
-                    break
-                else:
-                    if st.button("Report Link as Safe"):
-                        learned_links["safe"].add(link)
-                        st.write("Link reported as safe")
-
-
-    if text_content:
-        st.subheader("Text:")
-        st.write(text_content)
-
-        if st.button("Predict Scam"):
             prediction = predict_scam(text_content)
             st.write(f"Prediction: {prediction}")
+
+        if link_content:
+            st.subheader("Links:")
+            st.write(link_content)
+
+            for link in link_content.splitlines():
+                prediction = predict_link_type(link)
+                st.write(f"Prediction for {link}: {prediction}")
+
+                if prediction == 'benign':
+                    if st.button(f"Report {link} as Dangerous"):
+                        learned_links["dangerous"].add(link)
+                        st.write(f"Link {link} learned as dangerous")
+                else:
+                    if st.button(f"Report {link} as Safe"):
+                        learned_links["safe"].add(link)
+                        st.write(f"Link {link} learned as safe")
 
     # Display learned links
     if learned_links["dangerous"]:
