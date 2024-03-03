@@ -5,6 +5,10 @@ import pickle
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+import sqlite3
+
+
+connection = sqlite3.connect("database.db")
 
 # Ensure NLTK data is downloaded
 nltk.download('stopwords')
@@ -62,12 +66,17 @@ def preprocess_input(text):
 
 def report_link(file, link):
     with open(file, 'a') as f:
-        f.write(link + '\n')
+        # f.write(link + '\n')
+        connection.execute(f"""insert into links values("{link}" , {1})""")
 
 def is_reported(file, link):
-    if os.path.exists(file):
-        with open(file, 'r') as f:
-            return link.strip() in f.readlines()
+    # if os.path.exists(file):
+        # with open(file, 'r') as f:
+            # return link.strip() in f.readlines()
+    data = connection.execute("""select * from links where link = "{link}" """)
+    if len(list(data)) > 0:
+        return True
+
     return False
 
 def main():
