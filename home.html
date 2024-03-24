@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scam Text & Phishing Link Detection Website</title>
+    <style>
+        /* Navigation bar styles */
+        .navbar {
+            background-color: #f2f2f2; /* Grey background */
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000; /* Ensure the navbar stays on top */
+            font-size: 24px; /* Increase font size */
+        }
+        
+        .navbar h2 {
+            margin: 0;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        /* Center-align content */
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        /* Form styles */
+        form {
+            width: 60%; /* Set width to control the size of the form */
+            margin: auto;
+        }
+
+        textarea {
+            width: 100%; /* Make textarea fill the available width */
+            height: 200px; /* Increase height of textarea */
+            font-size: 18px; /* Increase font size */
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation bar -->
+<div class="navbar">
+    <h2>Scam Text & Phishing Link Detection Website</h2>
+</div>
+
+<!-- Content -->
+<div class="content">
+    <form action="/detect" method="post">
+        <label for="text">Enter your text:</label><br>
+        <textarea id="text" name="text" rows="4" cols="50"></textarea><br>
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
+</body>
+</html>
