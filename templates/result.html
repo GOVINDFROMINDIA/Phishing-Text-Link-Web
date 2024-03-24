@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scam Text & Phishing Link Detection Result</title>
+</head>
+<body>
+    <h2>Scam Text & Phishing Link Detection Result</h2>
+    <p>Entered Text: {{ text }}</p>
+
+    <h3>Links:</h3>
+    <ul>
+        {% for link, prediction in links %}
+            <li>{{ link }} - {{ prediction }}</li>
+            {% if prediction == 'benign' %}
+                {% if link not in reported_links %}
+                    <form action="/report" method="post">
+                        <input type="hidden" name="link" value="{{ link }}">
+                        <input type="hidden" name="report_type" value="dangerous">
+                        <button style="background-color: blue; color: white;" type="submit">Report Dangerous</button>
+                    </form>
+                {% else %}
+                    The link has been previously reported
+                {% endif %}
+            {% else %}
+                {% if link not in reported_links %}
+                    <form action="/report" method="post">
+                        <input type="hidden" name="link" value="{{ link }}">
+                        <input type="hidden" name="report_type" value="safe">
+                        <button style="background-color: red; color: white;" type="submit">Report Safe</button>
+                    </form>
+                {% else %}
+                    The link has been previously reported
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    <h3>Scam Text Prediction:</h3>
+    <p>{{ scam_text }}</p>
+</body>
+</html>
