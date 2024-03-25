@@ -7,7 +7,8 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
 app = Flask(__name__)
-
+S = []
+D = []
 # Download NLTK data (you only need to do this once)
 nltk.download('stopwords')
 nltk.download('wordnet')
@@ -79,12 +80,24 @@ def detect():
         # Split text into links and texts
         links = re.findall(r'(https?://\S+)', text)
         text_without_links = re.sub(r'(https?://\S+)', '', text)
-        
-        # Predict link types
-        link_predictions = [predict_link_type(link) for link in links]
-        
+         
         # Predict scam text
         scam_text_prediction = predict_scam_text(text_without_links)
+        current = links[0]
+        link_predictions=[]
+        if current in S:
+            link_predictions.append("benign")   
+
+        elif current in D:
+            link_predictions.append("dangrous")   
+        else:
+            # Predict link types
+            link_predictions = [predict_link_type(link) for link in links]
+            if link_predictions=='benign':
+                scam_text  = 'safe'
+            else:
+                scam_text  = 'dangerous'
+
         
         return render_template('result.html', text=text, links=zip(links, link_predictions), scam_text=scam_text_prediction)
 
@@ -93,10 +106,15 @@ def report():
     if request.method == 'POST':
         link = request.form['link']
         report_type = request.form['report_type']
-        
-        if link in reported_links:
-            return redirect(url_for('home', message="The link has been previously reported"))
-        
+        if report_type=='safe':
+            if link not in S:
+                S.append(link)
+                return "Link Has Been Reported As Safe"
+        elif report_type=='dangerous':
+            if link not in D:
+                D.append(link)
+                return "Link Has Been Reported As Dangerous"
+       
         reported_links[link] = report_type
         
         return redirect(url_for('home'))
